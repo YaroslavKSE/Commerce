@@ -1,0 +1,41 @@
+{% extends "auctions/layout.html" %}
+{% block title %}
+    Create listing
+{% endblock %}
+{% block body %}
+    <form action="{% url 'create_listing' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" style="width: 30%" type="text" name="title"
+                   placeholder="Title for the listing">
+        </div>
+        <div class="form-group">
+            <input class="form-control" style="width: 30%" type="text" name="starting_bid" placeholder="Staring bid">
+        </div>
+        <div class="input-group" style="margin-bottom: 10px">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> Description</span>
+            </div>
+            <textarea class="form-control" name="description"
+                      placeholder="Description"> </textarea>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Create Listing">
+    </form>
+    {% if massage == "success" %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully added a new listing. If you want to see your listing
+                click on "Active Listings" button.</p>
+            <hr>
+            <p class="mb-0">To create one more listing click on "Create Listing" button.</p>
+        </div>
+    {% endif %}
+    {% if massage == "notSuccess" %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Something went wrong!</strong> "You need to fill all the forms to create a listing".
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+{% endblock %}
