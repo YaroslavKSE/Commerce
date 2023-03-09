@@ -5,7 +5,12 @@
 
 {% for listing in listings %}
     <ul>
-        <li> <h4>{{ listing.title }}</h4> Bid: {{ listing.bid }}$ Description: {{ listing.description }} </li>
+    {%if listing.image != ""%}
+        <li> <h4>{{ listing.title }}</h4> Price: {{ listing.bid }}$ Description: {{ listing.description }} 
+            <img src="{{ listing.image }}" alt="{{ listing.title }}"> </li>
+    {% else %}
+        <li> <h4>{{ listing.title }}</h4> Price: {{ listing.bid }}$ Description: {{ listing.description }}
+    {% endif %}
     </ul>
 {% endfor %}
 {% endblock %}

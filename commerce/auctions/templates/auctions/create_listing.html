@@ -3,7 +3,7 @@
     Create listing
 {% endblock %}
 {% block body %}
-    <form action="{% url 'create_listing' %}" method="POST" >
+    <form action="{% url 'create_listing' %}" method="POST">
         {% csrf_token %}
         <div class="form-group">
             <input required autofocus class="form-control" style="width: 30%" type="text" name="title"
@@ -13,12 +13,25 @@
             <input required class="form-control" style="width: 30%" type="text" name="starting_bid"
                    placeholder="Staring bid">
         </div>
+        <div class="form-group">
+            <input class="form-control" style="width: 30%" type="text" name="image"
+                   placeholder="Image URL">
+        </div>
         <div class="input-group" style="margin-bottom: 10px">
             <div class="input-group-prepend">
                 <span class="input-group-text"> Description</span>
             </div>
             <textarea class="form-control" name="description"
                       placeholder="Description"> </textarea>
+        </div>
+        <div class="form-group" style="width: 30%">
+            <label for="sel1">Select category:</label>
+            <select class="form-control" id="sel1" name="category">
+                <option>Electronics</option>
+                <option>Food</option>
+                <option>Clothes</option>
+                <option>Materials</option>
+            </select>
         </div>
         <input class="btn btn-primary" type="submit" value="Create Listing">
     </form>

@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing
+from .models import User, Listing, Category
 
 
 def index(request):
@@ -69,7 +69,10 @@ def create_listing(request):
         title = request.POST["title"]
         description = request.POST["description"]
         bid = int(request.POST["starting_bid"])
-        listing = Listing(title=title, description=description, bid=bid)
+        image = request.POST["image"]
+        category = Category(name_of_category=request.POST["category"])
+        category.save()
+        listing = Listing(title=title, description=description, bid=bid, image=image, category=category)
         listing.save()
         if listing is not None:
             return render(request, "auctions/create_listing.html", {"massage": "success"})
