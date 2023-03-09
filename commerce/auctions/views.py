@@ -8,7 +8,8 @@ from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.all()
+    return render(request, "auctions/index.html", {"listings": listings})
 
 
 def login_view(request):
@@ -70,9 +71,8 @@ def create_listing(request):
         bid = int(request.POST["starting_bid"])
         listing = Listing(title=title, description=description, bid=bid)
         listing.save()
-        if listing.save() is not None:
+        if listing is not None:
             return render(request, "auctions/create_listing.html", {"massage": "success"})
         else:
-            return render(request, "auctions/create_listing.html", {
-                "massage": "notSuccess"})
+            return render(request, "auctions/create_listing.html", {"massage": "notSuccess"})
     return render(request, "auctions/create_listing.html")

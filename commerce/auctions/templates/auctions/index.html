@@ -3,5 +3,9 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+{% for listing in listings %}
+    <ul>
+        <li> <h4>{{ listing.title }}</h4> Bid: {{ listing.bid }}$ Description: {{ listing.description }} </li>
+    </ul>
+{% endfor %}
 {% endblock %}

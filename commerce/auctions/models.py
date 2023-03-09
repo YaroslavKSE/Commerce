@@ -11,7 +11,6 @@ class Listing(models.Model):
     description = models.CharField(max_length=2000)
     bid = models.IntegerField()
 
-
-def __str__(self):
-    return f"Title: {self.title} Bid: {self.bid}" \
-           f"Description: {self.description}"
+    def __str__(self):
+        return f"Title: {self.title} Bid: {self.bid}$ " \
+            f"Description: {self.description}"
