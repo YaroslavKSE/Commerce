@@ -1,20 +1,24 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Watchlist</h2>
     {% for listing in listings %}
         <ul>
             {% if listing.image != "" %}
                 <li>
                     <div class="row g-0 bg-light position-relative">
-                        <div class="col-md-6 mb-md-0 p-md-4" style="max-height: 350px; max-width: 200px;object-fit: cover;">
+                        <div class="col-md-6 mb-md-0 p-md-4"
+                             style="max-height: 350px; max-width: 200px;object-fit: cover;">
                             <img src="{{ listing.image }}" class="w-100" alt="{{ listing.title }}">
                         </div>
                         <div class="col-md-6 p-4 ps-md-0">
                             <h5 class="mt-0">{{ listing.title }}</h5>
                             <h4> Price: {{ listing.bid }}$ </h4>
                             <p>{{ listing.description }}</p>
-                            <a href="/listing/{{ listing.id }}" class="stretched-link">Go to listing</a>
+                            <form action="{% url 'remove' id=listing.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Remove form watchlist</button>
+                            </form>
                         </div>
                     </div>
                 </li>
@@ -25,7 +29,10 @@
                             <h5 class="mt-0">{{ listing.title }}</h5>
                             <h4> Price: {{ listing.bid }}$ </h4>
                             <p>{{ listing.description }}</p>
-                            <a href="/listing/{{ listing.id }}" class="stretched-link">Go to listing</a>
+                            <form action="{% url 'remove' id=listing.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Remove from watchlist</button>
+                            </form>
                         </div>
                     </div>
                 </li>

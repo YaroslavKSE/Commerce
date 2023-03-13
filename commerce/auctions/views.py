@@ -8,7 +8,7 @@ from .models import User, Listing, Category
 
 
 def index(request):
-    listings = Listing.objects.all()
+    listings = Listing.objects.filter(active=True)
     return render(request, "auctions/index.html", {"listings": listings, "watchlist": True})
 
 
@@ -71,8 +71,8 @@ def create_listing(request):
         bid = int(request.POST["starting_bid"])
         image = request.POST["image"]
         category = Category(name_of_category=request.POST["category"])
-        category.save()
-        listing = Listing(title=title, description=description, bid=bid, image=image, category=category)
+        listing = Listing(title=title, description=description, bid=bid,
+                          image=image, category=category, owner=request.user)
         listing.save()
         if listing is not None:
             return render(request, "auctions/create_listing.html", {"massage": "success"})
@@ -83,10 +83,23 @@ def create_listing(request):
 
 def listing(request, listing):
     obj = Listing.objects.get(pk=listing)
+    user = request.user
     return render(request, "auctions/listing.html", {"listing": obj})
 
 
 def watchlist(request):
-    listings = Listing.objects.all()
+    return render(request, "auctions/watchlist.html", {"listings": Listing.objects.filter(watchlist=request.user)})
 
-    return render(request, "auctions/index.html", {"listings": listings, "watchlist": True})
+
+def add_to_watchlist(request, id):
+    current_listing = Listing.objects.get(pk=id)
+    user = request.user
+    current_listing.watchlist.add(user)
+    return render(request, "auctions/watchlist.html", {"listings": Listing.objects.filter(watchlist=user)})
+
+
+def remove(request, id):
+    current_listing = Listing.objects.get(pk=id)
+    user = request.user
+    current_listing.watchlist.remove(user)
+    return render(request, "auctions/watchlist.html", {"listings": user.user_watchlist.all()})

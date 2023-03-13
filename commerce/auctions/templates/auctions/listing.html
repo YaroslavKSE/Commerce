@@ -2,15 +2,14 @@
 
 {% block title %}
     {% if watchlist %}
-    Watchlist
+        Watchlist
     {% else %}
-    {{ listing.name }}
+        {{ listing.name }}
     {% endif %}
 {% endblock %}
 
 {% block body %}
     {% if listing.image != "" %}
-
         <div class="row g-0 bg-light position-relative">
             <div class="col-md-6 mb-md-0 p-md-4" style="max-height: 350px; max-width: 200px;object-fit: cover;">
                 <img src="{{ listing.image }}" class="w-100" alt="{{ listing.title }}">
@@ -19,26 +18,39 @@
                 <h5 class="mt-0">{{ listing.title }}</h5>
                 <h4> Price: {{ listing.bid }}$ </h4>
                 <p>{{ listing.description }}</p>
-                <a href="index.html" class="stretched-link">Add to watchlist</a>
+              <form action="{% url 'add_to_watchlist' id=listing.id%}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Add to watchlist</button>
+                </form>
             </div>
         </div>
-        <a href="#" class="stretched-link">Place bid</a>
+        <div class="form-group">
+            <form action={% url 'add_to_watchlist' id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="user_bid_listing" placeholder="BID">
+                <input type="submit" name="submit_bid_listing">
+            </form>
+        </div>
 
     {% else %}
-
         <div class="row g-0 bg-light position-relative">
             <div class="col-md-6 p-4 ps-md-0">
                 <h5 class="mt-0">{{ listing.title }}</h5>
                 <h4> Price: {{ listing.bid }}$ </h4>
                 <p>{{ listing.description }}</p>
-                <a href="index.html" class="stretched-link">Add to watchlist</a>
+                <form action="{% url 'add_to_watchlist' id=listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Add to watchlist</button>
+                </form>
             </div>
         </div>
-        <form action="index.html" method="POST">
-        {% csrf_token %}
-              <input type="text" name="user_bid_listing" placeholder="BID">
-            <input type="submit" name="submit_bid_listing">
-        </form>
+        <div class="form-group">
+            <form action="index.html" method="POST">
+                {% csrf_token %}
+                <input type="text" name="user_bid_listing" placeholder="BID">
+                <input type="submit" name="submit_bid_listing">
+            </form>
+        </div>
     {% endif %}
 
 {% endblock %}
