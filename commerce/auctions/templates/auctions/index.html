@@ -3,14 +3,34 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-{% for listing in listings %}
-    <ul>
-    {%if listing.image != ""%}
-        <li> <h4>{{ listing.title }}</h4> Price: {{ listing.bid }}$ Description: {{ listing.description }} 
-            <img src="{{ listing.image }}" alt="{{ listing.title }}"> </li>
-    {% else %}
-        <li> <h4>{{ listing.title }}</h4> Price: {{ listing.bid }}$ Description: {{ listing.description }}
-    {% endif %}
-    </ul>
-{% endfor %}
+    {% for listing in listings %}
+        <ul>
+            {% if listing.image != "" %}
+                <li>
+                    <div class="row g-0 bg-light position-relative">
+                        <div class="col-md-6 mb-md-0 p-md-4" style="max-height: 350px; max-width: 200px;object-fit: cover;">
+                            <img src="{{ listing.image }}" class="w-100" alt="{{ listing.title }}">
+                        </div>
+                        <div class="col-md-6 p-4 ps-md-0">
+                            <h5 class="mt-0">{{ listing.title }}</h5>
+                            <h4> Price: {{ listing.bid }}$ </h4>
+                            <p>{{ listing.description }}</p>
+                            <a href="/listing/{{ listing.id }}" class="stretched-link">Go to listing</a>
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                <li>
+                    <div class="row g-0 bg-light position-relative">
+                        <div class="col-md-6 p-4 ps-md-0">
+                            <h5 class="mt-0">{{ listing.title }}</h5>
+                            <h4> Price: {{ listing.bid }}$ </h4>
+                            <p>{{ listing.description }}</p>
+                            <a href="/listing/{{ listing.id }}" class="stretched-link">Go to listing</a>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    {% endfor %}
 {% endblock %}

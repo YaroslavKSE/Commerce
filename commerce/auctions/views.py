@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -9,7 +9,7 @@ from .models import User, Listing, Category
 
 def index(request):
     listings = Listing.objects.all()
-    return render(request, "auctions/index.html", {"listings": listings})
+    return render(request, "auctions/index.html", {"listings": listings, "watchlist": True})
 
 
 def login_view(request):
@@ -79,3 +79,14 @@ def create_listing(request):
         else:
             return render(request, "auctions/create_listing.html", {"massage": "notSuccess"})
     return render(request, "auctions/create_listing.html")
+
+
+def listing(request, listing):
+    obj = Listing.objects.get(pk=listing)
+    return render(request, "auctions/listing.html", {"listing": obj})
+
+
+def watchlist(request):
+    listings = Listing.objects.all()
+
+    return render(request, "auctions/index.html", {"listings": listings, "watchlist": True})
