@@ -15,10 +15,12 @@
                             <h5 class="mt-0">{{ listing.title }}</h5>
                             <h4> Price: {{ listing.bid }}$ </h4>
                             <p>{{ listing.description }}</p>
-                            <form action="{% url 'remove' id=listing.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-primary">Remove form watchlist</button>
-                            </form>
+                            <div class="form-group">
+                                <form action="{% url 'remove' id=listing.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Remove form watchlist</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -29,10 +31,12 @@
                             <h5 class="mt-0">{{ listing.title }}</h5>
                             <h4> Price: {{ listing.bid }}$ </h4>
                             <p>{{ listing.description }}</p>
-                            <form action="{% url 'remove' id=listing.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-primary">Remove from watchlist</button>
-                            </form>
+                            <div class="form-group">
+                                <form action="{% url 'remove' id=listing.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Remove form watchlist</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </li>

@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Comment, Bid
 
 
 def index(request):
@@ -68,9 +68,12 @@ def create_listing(request):
     if request.method == "POST":
         title = request.POST["title"]
         description = request.POST["description"]
-        bid = int(request.POST["starting_bid"])
+        price = request.POST["starting_bid"]
+        bid = Bid(bid=price, user=request.user)
+        bid.save()
         image = request.POST["image"]
-        category = Category(name_of_category=request.POST["category"])
+        category = Category.objects.get(name_of_category=request.POST["category"])
+
         listing = Listing(title=title, description=description, bid=bid,
                           image=image, category=category, owner=request.user)
         listing.save()
@@ -82,9 +85,13 @@ def create_listing(request):
 
 
 def listing(request, listing):
-    obj = Listing.objects.get(pk=listing)
+    listing = Listing.objects.get(pk=listing)
     user = request.user
-    return render(request, "auctions/listing.html", {"listing": obj})
+    all_comments = Comment.objects.filter(listing=listing)
+    is_in_watchlist = user in listing.watchlist.all()
+    return render(request, "auctions/listing.html", {"listing": listing,
+                                                     "is_in_watchlist": is_in_watchlist,
+                                                     "comments": all_comments})
 
 
 def watchlist(request):
@@ -103,3 +110,27 @@ def remove(request, id):
     user = request.user
     current_listing.watchlist.remove(user)
     return render(request, "auctions/watchlist.html", {"listings": user.user_watchlist.all()})
+
+
+def add_comment(request, id):
+    user = request.user
+    listing = Listing.objects.get(pk=id)
+    user_comment = request.POST['new_comment']
+    new_comment = Comment(owner=user, listing=listing, comment=user_comment)
+    new_comment.save()
+    return HttpResponseRedirect(reverse("listing", args=(id,)))
+
+
+def add_bid(request, id):
+    user = request.user
+    current_listing = Listing.objects.get(pk=id)
+    current_bid = Listing.objects.get(pk=id).bid.bid
+    new_bid = float(request.POST["user_bid_listing"])
+    if current_bid < new_bid:
+        higher_bid = Bid(bid=new_bid, user=user)
+        higher_bid.save()
+        current_listing.bid = higher_bid
+        current_listing.save()
+        return HttpResponseRedirect(reverse("listing", args=(id,)))
+    else:
+        return HttpResponseRedirect(reverse("listing", args=(id,)))
