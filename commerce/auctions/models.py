@@ -29,7 +29,7 @@ class Listing(models.Model):
     image = models.CharField(max_length=300, blank=True)
     active = models.BooleanField(default=True, blank=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True, related_name="owner_of_listing")
-    watchlist = models.ManyToManyField(User, blank=True, related_name="user_watchlist")
+    watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="user_watchlist")
 
     def __str__(self):
         return f"Title: {self.title} Bid: {self.bid}$ " \

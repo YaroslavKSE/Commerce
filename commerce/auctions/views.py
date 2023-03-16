@@ -84,13 +84,18 @@ def create_listing(request):
     return render(request, "auctions/create_listing.html")
 
 
-def listing(request, listing):
-    listing = Listing.objects.get(pk=listing)
+def listing(request, id):
+    listing = Listing.objects.get(pk=id)
     user = request.user
     all_comments = Comment.objects.filter(listing=listing)
     is_in_watchlist = user in listing.watchlist.all()
+    is_owner = True
+    if user != listing.owner:
+        is_owner = False
     return render(request, "auctions/listing.html", {"listing": listing,
                                                      "is_in_watchlist": is_in_watchlist,
+                                                     "is_owner": is_owner,
+                                                     "update": None,
                                                      "comments": all_comments})
 
 
@@ -102,6 +107,7 @@ def add_to_watchlist(request, id):
     current_listing = Listing.objects.get(pk=id)
     user = request.user
     current_listing.watchlist.add(user)
+    current_listing.save()
     return render(request, "auctions/watchlist.html", {"listings": Listing.objects.filter(watchlist=user)})
 
 
@@ -109,6 +115,7 @@ def remove(request, id):
     current_listing = Listing.objects.get(pk=id)
     user = request.user
     current_listing.watchlist.remove(user)
+    current_listing.save()
     return render(request, "auctions/watchlist.html", {"listings": user.user_watchlist.all()})
 
 
@@ -126,11 +133,44 @@ def add_bid(request, id):
     current_listing = Listing.objects.get(pk=id)
     current_bid = Listing.objects.get(pk=id).bid.bid
     new_bid = float(request.POST["user_bid_listing"])
+    all_comments = Comment.objects.filter(listing=current_listing)
+    is_in_watchlist = user in current_listing.watchlist.all()
+    is_owner = True
+    if user != current_listing.owner:
+        is_owner = False
     if current_bid < new_bid:
         higher_bid = Bid(bid=new_bid, user=user)
         higher_bid.save()
         current_listing.bid = higher_bid
         current_listing.save()
-        return HttpResponseRedirect(reverse("listing", args=(id,)))
-    else:
-        return HttpResponseRedirect(reverse("listing", args=(id,)))
+        return render(request, "auctions/listing.html", {"listing": current_listing,
+                                                         "is_in_watchlist": is_in_watchlist,
+                                                         "is_owner": is_owner,
+                                                         "comments": all_comments,
+                                                         "update": True})
+    if current_bid > new_bid:
+        return render(request, "auctions/listing.html", {"listing": current_listing,
+                                                         "is_in_watchlist": is_in_watchlist,
+                                                         "is_owner": is_owner,
+                                                         "comments": all_comments,
+                                                         "update": False})
+
+
+def close_bid(request, id):
+    user = request.user
+    current_listing = Listing.objects.get(pk=id)
+    current_listing.active = False
+    current_listing.save()
+    all_comments = Comment.objects.filter(listing=current_listing)
+    is_in_watchlist = user in current_listing.watchlist.all()
+    is_owner = True
+    if user != current_listing.owner:
+        is_owner = False
+    return render(request, "auctions/listing.html", {"listing": current_listing,
+                                                     "is_in_watchlist": is_in_watchlist,
+                                                     "is_owner": is_owner,
+                                                     "comments": all_comments,
+                                                     "update": True,
+                                                     "massage": "Congratulation! You've successfully closed an auction"})
+
+    # return HttpResponseRedirect(reverse("index"))
